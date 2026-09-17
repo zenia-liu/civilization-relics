@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#162421" />
+    <title>文明遗物 · 河湾落脚</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="game-shell" aria-label="文明遗物">
+      <section class="campaign" id="campaign" aria-label="良渚文明地图">
+        <header class="campaign-topbar">
+          <button class="campaign-leader" id="leader-button"><span>澧</span><i>河湾聚落</i></button>
+          <div class="chapter-status"><small id="chapter-label">第一幕 · 扎根</small><strong id="node-progress">第 1 / 40 节点</strong></div>
+          <button class="save-state" id="save-state" title="本地存档状态">本地<br><b>已存</b></button>
+        </header>
+        <section class="campaign-view" id="campaign-view"></section>
+        <nav class="campaign-nav" aria-label="文明导航">
+          <button data-view="world" class="active"><span>⌘</span>世界</button>
+          <button data-view="deck"><span>▤</span>卡组</button>
+          <button data-view="settlement"><span>⌂</span>聚落</button>
+          <button data-view="archive"><span>◉</span>文物</button>
+          <button data-view="chronicle"><span>〣</span>卷宗</button>
+        </nav>
+        <div class="sheet-backdrop" id="sheet-backdrop" hidden></div>
+        <section class="node-sheet" id="node-sheet" hidden></section>
+      </section>
+      <section class="battle" aria-live="polite">
+        <header class="topbar">
+          <div class="leader leader-player">
+            <div class="portrait">澧</div>
+            <div><strong>河湾聚落</strong><span>玉青阵线</span></div>
+          </div>
+          <div class="match-status">
+            <div class="timer" id="timer">03:00</div>
+            <div class="objective" id="battle-objective">控制更多节点以获胜</div>
+            <div class="mini-nodes" aria-label="节点控制状态">
+              <span id="mini-0"></span><span id="mini-1"></span><span id="mini-2"></span>
+            </div>
+          </div>
+          <div class="leader leader-enemy">
+            <div><strong>乌墩聚落</strong><span>林地守望</span></div>
+            <div class="portrait enemy-portrait">乌</div>
+          </div>
+        </header>
+
+        <div class="notice" id="notice">按住一张手牌，拖到任意战略节点后松开</div>
+
+        <section class="field" id="field" aria-label="三节点战场">
+          <div class="mist mist-a"></div><div class="mist mist-b"></div>
+          <div class="river"><i></i><i></i><i></i></div>
+          <div class="road road-a"></div><div class="road road-b"></div>
+          <div class="node node-left" data-node="0" role="button" tabindex="0" aria-label="北岸稻作区">
+            <div class="node-name"><span class="node-icon">⌁</span><b>北岸稻作区</b><small>生计</small></div>
+            <div class="control-track"><div class="control-fill" id="control-0"></div><em id="control-value-0">0</em></div>
+            <div class="node-ground"><div class="reeds"></div><div class="units" id="units-0"></div></div>
+            <div class="node-score" id="score-0">中立</div>
+          </div>
+          <div class="node node-center" data-node="1" role="button" tabindex="0" aria-label="河湾渡口">
+            <div class="node-name"><span class="node-icon">≋</span><b>河湾渡口</b><small>交流</small></div>
+            <div class="control-track"><div class="control-fill" id="control-1"></div><em id="control-value-1">0</em></div>
+            <div class="node-ground"><div class="dock"></div><div class="units" id="units-1"></div></div>
+            <div class="node-score" id="score-1">中立</div>
+          </div>
+          <div class="node node-right" data-node="2" role="button" tabindex="0" aria-label="南侧林地">
+            <div class="node-name"><span class="node-icon">⌇</span><b>南侧林地</b><small>木材</small></div>
+            <div class="control-track"><div class="control-fill" id="control-2"></div><em id="control-value-2">0</em></div>
+            <div class="node-ground"><div class="trees"></div><div class="units" id="units-2"></div></div>
+            <div class="node-score" id="score-2">中立</div>
+          </div>
+          <div class="battle-tip">拖至节点落下 · 单位将自动行军、交战与占点</div>
+        </section>
+
+        <section class="relic-bar" aria-label="领袖与核心文物">
+          <button class="relic" id="relic-left" title="玉璧：第一个双节点控制时返还1点动员力">◉<span>玉璧</span></button>
+          <button class="leader-skill" id="leader-skill" title="领袖技：令选中节点的己方劳作单位争夺效率提升30%，持续8秒">聚<br>力<span>就绪</span></button>
+          <button class="relic" id="relic-right" title="玉钺：第一次丢失控制节点时，守卫短暂强化">╲<span>玉钺</span></button>
+        </section>
+
+        <section class="hand-wrap">
+          <div class="hand-label"><span>手牌 · <b id="deck-count">8</b> 张循环</span><span class="drag-cue">按住拖到战场</span><button id="rules-button">战场说明</button></div>
+          <div class="hand" id="hand"></div>
+        </section>
+
+        <footer class="energy-bar">
+          <div class="energy-copy"><span>动员力</span><b id="energy-number">5</b><i>/10</i></div>
+          <div class="energy-pips" id="energy-pips" aria-label="当前动员力"></div>
+        </footer>
+      </section>
+    </main>
+
+    <dialog id="rules-dialog">
+      <button class="close-dialog" id="close-dialog" aria-label="关闭">×</button>
+      <p class="eyebrow">河湾落脚 · 战斗灰盒</p>
+      <h2>三分钟，争下河湾</h2>
+      <p>按住一张手牌，拖到战略节点后松开即可部署。单位会自动交战和占点；节点控制值达到正数即归你方、负数归乌墩。</p>
+      <dl>
+        <div><dt>劳作者</dt><dd>占点效率最高，但交战较弱。</dd></div>
+        <div><dt>守卫</dt><dd>擅长清理对方占点单位。</dd></div>
+        <div><dt>集中劳力</dt><dd>点选节点，让劳作单位短暂提升30%争夺。</dd></div>
+      </dl>
+      <p class="fine-print">动员力在前120秒每2.8秒恢复1点，最后60秒恢复速度翻倍。</p>
+    </dialog>
+    <div class="result-overlay" id="result-overlay" hidden>
+      <div class="result-card">
+        <p class="eyebrow" id="result-kicker">河湾争域结束</p>
+        <h1 id="result-title">河湾已守住</h1>
+        <div class="result-score" id="result-score">2 <i>:</i> 1</div>
+        <p id="result-detail">你控制了更多战略节点。</p>
+        <button id="restart-button">再次挑战</button>
+      </div>
+    </div>
+    <script src="./game.js?v=20260917-7"></script>
+    <script src="./campaign.js?v=20260917-7"></script>
+  </body>
+</html>
