@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#162421" />
+    <title>文明遗物 · 河湾落脚</title>
+    <link rel="stylesheet" href="./styles.css?v=20260921-19" />
+  </head>
+  <body>
+    <main class="game-shell" aria-label="文明遗物">
+      <section class="campaign" id="campaign" aria-label="良渚文明地图">
+        <header class="campaign-topbar">
+          <button class="campaign-leader" id="leader-button"><span>澧</span><i>河湾聚落</i></button>
+          <div class="chapter-status"><small id="chapter-label">第一幕 · 扎根</small><strong id="node-progress">第 1 / 40 节点</strong></div>
+          <button class="save-state" id="save-state" title="本地存档状态">本地<br><b>已存</b></button>
+        </header>
+        <section class="campaign-view" id="campaign-view"></section>
+        <nav class="campaign-nav" aria-label="文明导航">
+          <button data-view="world" class="active" aria-label="征程"><span class="nav-icon nav-world" aria-hidden="true"></span><small>征程</small></button>
+          <button data-view="deck" aria-label="我的卡牌"><span class="nav-icon nav-deck" aria-hidden="true"></span><small>卡组</small></button>
+          <button data-view="settlement" aria-label="聚落"><span class="nav-icon nav-settlement" aria-hidden="true"></span><small>聚落</small></button>
+          <button data-view="archive" aria-label="文物合成"><span class="nav-icon nav-relic" aria-hidden="true"></span><small>文物</small></button>
+        </nav>
+        <div class="sheet-backdrop" id="sheet-backdrop" hidden></div>
+        <section class="node-sheet" id="node-sheet" hidden></section>
+      </section>
+      <section class="battle" aria-live="polite">
+        <header class="topbar">
+          <div class="battle-score enemy-score" aria-label="敌方乌墩聚落">
+            <div class="portrait enemy-portrait">乌</div><div><strong>乌墩</strong><span>敌方聚落</span></div>
+            <b class="crown-count" id="enemy-crowns">0</b>
+          </div>
+          <div class="match-status">
+            <div class="timer" id="timer">03:00</div>
+            <div class="objective" id="battle-objective">摧毁核心即胜 · 时间到比外塔</div>
+          </div>
+          <div class="battle-score player-score" aria-label="我方河湾聚落">
+            <b class="crown-count" id="player-crowns">0</b>
+            <div><strong>河湾</strong><span>我方聚落</span></div><div class="portrait">澧</div>
+          </div>
+        </header>
+
+        <div class="notice" id="notice">拖动卡牌到蓝色部署区，沿线推塔</div>
+
+        <section class="field" id="field" aria-label="三路推塔战场">
+          <div class="arena-banner enemy-banner"><span>乌墩防线</span><b>红色 · 敌方</b></div>
+          <div class="arena-banner player-banner"><b>蓝色 · 我方部署区</b><span>河湾出征地</span></div>
+          <div class="core enemy-core"><span>乌墩核心</span><i><b id="enemy-core-hp"></b></i><em id="enemy-core-value">1600</em></div>
+          <div class="core player-core"><span>河湾核心</span><i><b id="player-core-hp"></b></i><em id="player-core-value">1600</em></div>
+          <div class="river"><i></i><i></i><i></i></div>
+          <div class="bridge bridge-left"></div><div class="bridge bridge-right"></div>
+          <div class="lane-drop lane-left" data-lane="0" role="button" tabindex="0" aria-label="左路稻作道部署区"><span class="lane-label">左路 · 稻作道</span><div class="tower-slot enemy-tower" id="enemy-tower-0"></div><div class="tower-slot player-tower" id="player-tower-0"></div><div class="units" id="units-0"></div></div>
+          <div class="lane-drop lane-center" data-lane="1" role="button" tabindex="0" aria-label="中路渡口部署区"><span class="lane-label">中路 · 渡口</span><div class="tower-slot enemy-tower" id="enemy-tower-1"></div><div class="tower-slot player-tower" id="player-tower-1"></div><div class="units" id="units-1"></div></div>
+          <div class="lane-drop lane-right" data-lane="2" role="button" tabindex="0" aria-label="右路林地道部署区"><span class="lane-label">右路 · 林地道</span><div class="tower-slot enemy-tower" id="enemy-tower-2"></div><div class="tower-slot player-tower" id="player-tower-2"></div><div class="units" id="units-2"></div></div>
+          <div class="battle-tip">先拆外塔，再攻击敌方核心 · 我方只可在蓝色区域部署</div>
+        </section>
+
+        <section class="hand-wrap">
+          <div class="hand-label"><button class="leader-skill" id="leader-skill" title="聚力：选择一路，让我方单位短暂提高攻击">聚力<span>就绪</span></button><span class="next-card">下一张 <b id="next-card">?</b></span><span class="drag-cue">拖动出战</span><button id="rules-button">?</button></div>
+          <div class="hand" id="hand"></div>
+          <div class="relic-strip" aria-label="核心文物"><span id="relic-left">◉ 玉璧</span><span id="relic-right">╲ 玉钺</span></div>
+        </section>
+
+        <footer class="energy-bar">
+          <div class="energy-copy"><span>动员力</span><b id="energy-number">5</b><i>/10</i></div>
+          <div class="energy-pips" id="energy-pips" aria-label="当前动员力"></div>
+        </footer>
+      </section>
+    </main>
+
+    <dialog id="rules-dialog">
+      <button class="close-dialog" id="close-dialog" aria-label="关闭">×</button>
+      <p class="eyebrow">河湾落脚 · 三路推塔</p>
+      <h2>三分钟，推掉对方核心</h2>
+      <p>按住一张手牌，拖到蓝色我方部署区后松开。单位会沿选择的路线自动前进、拦截敌军，并攻击该路的敌方外塔。</p>
+      <dl>
+        <div><dt>外塔</dt><dd>拆掉该路外塔，部队才会继续攻击敌方核心。</dd></div>
+        <div><dt>核心</dt><dd>任意时刻摧毁敌方核心即刻获胜，不需要等到三分钟结束。</dd></div>
+        <div><dt>时间到</dt><dd>比较双方已摧毁外塔数；相同即平手，回地图进入外交或再次开战。</dd></div>
+      </dl>
+      <p class="fine-print">动员力在前 120 秒每 2.8 秒恢复 1 点，最后 60 秒恢复速度翻倍。守卫输出高；搬运队移动快；设施能挡住来犯单位。</p>
+    </dialog>
+    <div class="result-overlay" id="result-overlay" hidden>
+      <div class="result-card">
+        <p class="eyebrow" id="result-kicker">河湾争域结束</p>
+        <h1 id="result-title">河湾已守住</h1>
+        <div class="result-score" id="result-score">2 <i>:</i> 1</div>
+        <p id="result-detail">你控制了更多战略节点。</p>
+        <button id="restart-button">再次挑战</button>
+        <button id="diplomacy-button" class="result-secondary" hidden>进入外交处理</button>
+      </div>
+    </div>
+    <script src="./game.js?v=20260921-4"></script>
+    <script src="./campaign.js?v=20260921-11"></script>
+  </body>
+</html>
